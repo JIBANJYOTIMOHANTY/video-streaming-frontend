@@ -1,59 +1,88 @@
-# Frontend
+# 🖥️ Video Streaming Angular Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
+Welcome to the Frontend application for the Video Streaming Platform. This client is a premium, modern single-page application (SPA) built using **Angular 21** and **Tailwind CSS 4**. It provides a highly responsive, interactive, and gorgeous user interface for discovering, watching, and uploading videos.
 
-## Development server
+---
 
-To start a local development server, run:
+## ✨ Features
+
+- **🔑 Secure Authentication & Route Guards:** Built-in registration, login, and JWT token management with automated routing security guards (`authGuard`).
+- **🏠 Discover & Home Dashboard:** Vibrant home layout equipped with categories/chips filters (e.g. Frontend, Backend, System Design, Cloud) and quick search capabilities.
+- **🎥 Interactive Video Player:** Custom-designed streaming player tailored for high-quality, buffer-free playback.
+- **📤 Easy Video Uploads:** User-friendly workflow to publish videos, upload files, and input metadata.
+- **📁 My Videos Catalog:** Dedicated workspace for users to manage, preview, and review their uploaded video collection.
+- **👤 User Profile Management:** View personal stats, upload history, and settings.
+
+---
+
+## 🛠️ Tech Stack & Styling
+
+- **Framework:** Angular 21.x (Standalone Components, signals, control flow)
+- **Styling:** Tailwind CSS 4.x (via `@tailwindcss/postcss`)
+- **Routing:** Component-based lazy loading with guards
+- **Testing:** Vitest (Modern, blazing fast unit testing)
+- **State Management:** Reactive Extensions (RxJS) & Angular Signals
+
+---
+
+## 📁 Key Directories & Architecture
+
+The Angular source code is organized cleanly inside the `src/` directory:
+
+- **`app/`**: Root component configuration, routes, and global styling.
+  - **`auth/`**: Login, registration, interceptors, and security guards (`auth.guard.ts`).
+  - **`home/`**: Home page catalog, filter chips, and search logic.
+  - **`profile/`**: User profile card and settings component.
+  - **`shared/`**: Reusable components like navigation bars, loaders, buttons, and custom pipes.
+  - **`upload/`**: Drag-and-drop file uploaders and metadata forms.
+  - **`video/`**: Video player components and the personal video dashboard (`my-videos`).
+  - **`services/`**: API clients for interacting with Backend microservices through the API Gateway.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** (v20+ recommended)
+- **npm** (v10+ package manager)
+
+### Installation
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install all development and production dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Development Server
+
+To start the local development server with hot-reloading:
 
 ```bash
-ng serve
+npm run start
 ```
+Once initialized, open your browser and visit **`http://localhost:4200/`**.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🧪 Development Commands
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Command | Action | Description |
+| :--- | :--- | :--- |
+| **`npm run start`** | `ng serve` | Runs local dev server on port `4200` |
+| **`npm run build`** | `ng build` | Compiles the project and outputs optimized bundle to `dist/` |
+| **`npm run test`** | `ng test` | Executes unit tests with Vitest |
+| **`ng generate component <name>`** | Scaffolding | Generates a new standalone component |
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🎨 Design System & Styling Details
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The UI is built with a highly cohesive color palette and a dark-mode-first aesthetic inspiration:
+- Custom gradient accents (`violet-600` to `fuchsia-500` to `indigo-600`).
+- Sleek interactive micro-interactions (hover zooms, glowing borders, active state indicator chips).
+- Modern layouts optimized for both mobile screens and wide desktop displays.
