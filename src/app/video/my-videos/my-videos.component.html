@@ -1,0 +1,112 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+        My Video Studio
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+        Manage and track the transcoding status of your uploaded videos.
+      </p>
+    </div>
+    <a
+      routerLink="/upload"
+      class="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md dark:shadow-lg dark:shadow-indigo-500/20 text-center cursor-pointer text-sm"
+    >
+      Upload Video
+    </a>
+  </div>
+
+  @if (myVideos().length > 0) {
+    <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm dark:shadow-2xl">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800/80">
+          <thead class="bg-slate-50 dark:bg-slate-950/40">
+            <tr>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Video info</th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Transcoding Status</th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Views</th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Uploaded Date</th>
+              <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-800/60 bg-transparent">
+            @for (video of myVideos(); track video.id) {
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-4">
+                    <div class="relative w-24 aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950 shrink-0 border border-slate-200 dark:border-slate-805">
+                      <img [src]="video.thumbnailUrl" [alt]="video.title" class="object-cover w-full h-full" />
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">{{ video.title }}</div>
+                      <div class="text-xs text-slate-500 truncate max-w-xs sm:max-w-md mt-0.5">{{ video.description }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  @if (video.status === 'Processing') {
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 animate-pulse">
+                      <svg class="animate-spin h-3.5 w-3.5 text-amber-500 dark:text-amber-400" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Ready
+                    </span>
+                  }
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800 dark:text-slate-350 font-bold">
+                  {{ video.views | number }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                  {{ video.createdAt | date:'medium' }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
+                  <div class="flex items-center justify-end gap-3">
+                    @if (video.status === 'Ready') {
+                      <a
+                        [routerLink]="['/watch', video.id]"
+                        class="text-violet-600 dark:text-violet-400 hover:underline transition-all text-xs font-bold"
+                      >
+                        Play
+                      </a>
+                    }
+                    <button
+                      (click)="onDelete(video.id)"
+                      class="text-red-600 dark:text-red-400 hover:underline transition-all text-xs font-bold cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <div class="text-center py-20 bg-white dark:bg-slate-900/20 rounded-3xl border border-slate-200 dark:border-slate-800">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-400 dark:text-slate-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <p class="text-slate-600 dark:text-slate-405 text-lg font-medium">No videos uploaded yet.</p>
+      <p class="text-slate-400 dark:text-slate-500 text-sm mt-1">Start sharing your content by publishing your first video!</p>
+      <a
+        routerLink="/upload"
+        class="mt-6 inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-md dark:shadow-lg dark:shadow-indigo-500/20 cursor-pointer"
+      >
+        Upload Now
+      </a>
+    </div>
+  }
+</div>

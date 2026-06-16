@@ -1,0 +1,101 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Back Link -->
+  <div class="mb-6">
+    <a routerLink="/" class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Home
+    </a>
+  </div>
+
+  @if (video()) {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Player and Metadata -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Player -->
+        <div class="relative bg-black rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-2xl aspect-video w-full">
+          <video
+            [src]="video()?.videoUrl"
+            controls
+            autoplay
+            class="w-full h-full object-contain"
+          ></video>
+        </div>
+
+        <!-- Metadata -->
+        <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4 shadow-sm">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+            {{ video()?.title }}
+          </h1>
+
+          <div class="flex flex-wrap items-center justify-between text-xs sm:text-sm text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800/60 pb-4 gap-4">
+            <span class="flex items-center gap-1.5 font-semibold bg-slate-50 dark:bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-250 dark:border-slate-800 text-slate-800 dark:text-slate-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              {{ video()?.views | number }} views
+            </span>
+
+            <span>Published on {{ video()?.createdAt | date:'mediumDate' }}</span>
+          </div>
+
+          <div class="space-y-2">
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Description</h2>
+            <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+              {{ video()?.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Up Next Column -->
+      <div class="space-y-6">
+        <h2 class="text-lg font-bold text-slate-905 dark:text-white flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Up Next
+        </h2>
+
+        @if (recommendedVideos().length > 0) {
+          <div class="space-y-4">
+            @for (rec of recommendedVideos(); track rec.id) {
+              <a
+                [routerLink]="['/watch', rec.id]"
+                class="flex gap-4 group bg-white dark:bg-slate-900/30 hover:bg-slate-50 dark:hover:bg-slate-900/60 border border-slate-200 dark:border-slate-800/60 p-3 rounded-xl transition-all"
+              >
+                <div class="relative w-32 shrink-0 aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950">
+                  <img
+                    [src]="rec.thumbnailUrl"
+                    [alt]="rec.title"
+                    class="object-cover w-full h-full group-hover:scale-102 transition-transform duration-300"
+                  />
+                </div>
+                <div class="flex flex-col justify-center min-w-0">
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors line-clamp-2 leading-tight">
+                    {{ rec.title }}
+                  </h3>
+                  <span class="text-xs text-slate-500 dark:text-slate-500 mt-1.5 flex items-center gap-1">
+                    {{ rec.views | number }} views
+                  </span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="text-slate-500 text-sm italic">No other recommended videos available.</p>
+        }
+      </div>
+    </div>
+  @} @else {
+    <div class="text-center py-20 bg-white dark:bg-slate-900/20 rounded-3xl border border-slate-200 dark:border-slate-800">
+      <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-2">Video Not Found</h2>
+      <p class="text-slate-500 dark:text-slate-400 mb-6">The video you are trying to view does not exist or has been deleted.</p>
+      <a routerLink="/" class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-medium px-6 py-2.5 rounded-xl transition-colors cursor-pointer shadow-lg shadow-violet-500/20">
+        Back to Home
+      </a>
+    </div>
+  }
+</div>

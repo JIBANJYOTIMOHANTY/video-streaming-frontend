@@ -1,0 +1,142 @@
+<div class="max-w-3xl mx-auto px-4 py-12">
+  <div class="bg-white dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-md dark:shadow-2xl">
+    <div class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        Upload New Video
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+        Publish your educational tutorials or creative videos. Videos will undergo transcoding before appearing on the home feed.
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-6 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    @if (successMessage()) {
+      <div class="mb-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    <form class="space-y-6" (ngSubmit)="onSubmit()">
+      <!-- File Selector -->
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Video File *</label>
+        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-slate-200 dark:border-slate-800 border-dashed rounded-2xl hover:border-slate-350 dark:hover:border-slate-700 transition-colors bg-slate-50/50 dark:bg-slate-955/40 relative">
+          <div class="space-y-2 text-center">
+            <svg class="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="flex text-sm text-slate-500 dark:text-slate-400 justify-center">
+              <label for="file-upload" class="relative cursor-pointer rounded-md font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-350 transition-colors focus-within:outline-none">
+                <span>Select a video file</span>
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  accept="video/*"
+                  class="sr-only"
+                  (change)="onFileSelected($event)"
+                  [disabled]="isUploading()"
+                />
+              </label>
+            </div>
+            <p class="text-xs text-slate-400 dark:text-slate-500">MP4, WebM, or OGG files up to 50MB</p>
+            @if (videoFileName()) {
+              <div class="mt-3 bg-violet-100 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs px-3 py-1.5 rounded-lg border border-violet-200 dark:border-violet-500/20 max-w-xs mx-auto truncate">
+                Selected: {{ videoFileName() }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Title Input -->
+      <div>
+        <label for="title" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Title *</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          required
+          [(ngModel)]="title"
+          [disabled]="isUploading()"
+          placeholder="e.g., Spring Boot and Angular Masterclass"
+          class="mt-1 block w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+        />
+      </div>
+
+      <!-- Description Input -->
+      <div>
+        <label for="description" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Description *</label>
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          required
+          [(ngModel)]="description"
+          [disabled]="isUploading()"
+          placeholder="What is this video about? Add chapters, links, and detailed notes."
+          class="mt-1 block w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+        ></textarea>
+      </div>
+
+      <!-- Thumbnail Input -->
+      <div>
+        <label for="thumbnail" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Thumbnail URL (Optional)</label>
+        <input
+          type="url"
+          id="thumbnail"
+          name="thumbnail"
+          [(ngModel)]="thumbnailUrl"
+          [disabled]="isUploading()"
+          placeholder="e.g., https://images.unsplash.com/photo-..."
+          class="mt-1 block w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+        />
+      </div>
+
+      <!-- Progress Bar (Only during upload) -->
+      @if (isUploading()) {
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs font-semibold text-slate-550 dark:text-slate-400">
+            <span>Uploading data...</span>
+            <span>{{ uploadProgress() }}%</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-205 dark:border-slate-800">
+            <div
+              class="bg-gradient-to-r from-violet-600 to-indigo-600 h-2 rounded-full transition-all duration-300"
+              [style.width.%]="uploadProgress()"
+            ></div>
+          </div>
+        </div>
+      }
+
+      <!-- Submit Button -->
+      <div class="pt-4">
+        <button
+          type="submit"
+          [disabled]="isUploading() || !title || !description || !selectedVideoFile"
+          class="relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md dark:shadow-lg dark:shadow-indigo-500/20"
+        >
+          @if (isUploading()) {
+            Uploading...
+          } @else {
+            Publish Video
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
