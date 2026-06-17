@@ -87,6 +87,6 @@ export class AuthService {
     localStorage.removeItem(this.USER_KEY);
     localStorage.removeItem('jwt_token');
     this.currentUserSignal.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 }
