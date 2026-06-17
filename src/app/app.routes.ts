@@ -12,7 +12,6 @@ export const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [authGuard],
     loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
   },
   {
@@ -22,7 +21,6 @@ export const routes: Routes = [
   },
   {
     path: 'watch/:id',
-    canActivate: [authGuard],
     loadComponent: () => import('./video/video-player/video-player.component').then(m => m.VideoPlayerComponent)
   },
   {
