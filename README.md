@@ -36,7 +36,7 @@ The Angular source code is organized cleanly inside the `src/` directory:
   - **`shared/`**: Reusable components like navigation bars, loaders, buttons, and custom pipes.
   - **`upload/`**: Drag-and-drop file uploaders and metadata forms.
   - **`video/`**: Video player components and the personal video dashboard (`my-videos`).
-  - **`services/`**: API clients for interacting with Backend microservices through the API Gateway.
+  - **`services/`**: API clients for interacting with Backend microservices through the API Gateway on port `8082`.
 
 ---
 
