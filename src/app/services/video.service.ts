@@ -70,7 +70,7 @@ export class VideoService {
 
   private mapBackendVideo(v: BackendVideo): Video {
     return {
-      id: v.id.toString(),
+      id: v.id ? v.id.toString() : '',
       title: v.title,
       description: v.description,
       thumbnailUrl: v.thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
