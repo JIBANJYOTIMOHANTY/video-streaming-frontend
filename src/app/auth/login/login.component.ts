@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -11,15 +12,15 @@ import { AuthService } from '../auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  email = '';
+  username = '';
   password = '';
   errorMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   onSubmit() {
-    if (!this.email || !this.password) {
+    if (!this.username || !this.password) {
       this.errorMessage.set('Please fill in all fields');
       return;
     }
@@ -27,16 +28,20 @@ export class LoginComponent {
     this.errorMessage.set(null);
     this.isLoading.set(true);
 
-    // Add a tiny mock latency for realism and nice spinner
-    setTimeout(() => {
-      const res = this.authService.login(this.email, this.password);
-      this.isLoading.set(false);
-
-      if (res.success) {
-        this.router.navigate(['/']);
-      } else {
-        this.errorMessage.set(res.message);
+    this.authService.login(this.username, this.password).subscribe({
+      next: (res) => {
+        this.isLoading.set(false);
+        if (res.status === 0) {
+          this.router.navigate(['/']);
+        } else {
+          this.errorMessage.set(res.message || 'Login failed');
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const errorMsg = err.message || 'Invalid username or password';
+        this.errorMessage.set(errorMsg);
       }
-    }, 800);
+    });
   }
 }

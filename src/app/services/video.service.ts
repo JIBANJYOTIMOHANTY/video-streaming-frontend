@@ -1,5 +1,8 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable, Subscriber, Subject } from 'rxjs';
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient, HttpRequest, HttpEventType } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
+import { CommonService } from '../common-service/common-service';
+import { environment } from '../environments/environment';
 
 export interface Video {
   id: string;
@@ -13,69 +16,70 @@ export interface Video {
   createdAt: string;
 }
 
+interface VideoApiResponse<T> {
+  status: number;
+  message: string;
+  data: T;
+}
+
+interface BackendVideo {
+  id: number;
+  title: string;
+  description: string;
+  videoUrl: string;
+  thumbnailUrl: string;
+  userId: string;
+  status: string;
+  views: number;
+  createdAt?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class VideoService {
-  private readonly VIDEOS_KEY = 'video_stream_videos_db';
-
-  private initialVideos: Video[] = [
-    {
-      id: 'vid_1',
-      title: 'Big Buck Bunny',
-      description: 'A large and lovable rabbit deals with three bullying rodents in this classic open-source animated short film.',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1574717024453-354056afd6fc?auto=format&fit=crop&w=600&q=80',
-      videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-      views: 1240,
-      userId: 'system',
-      status: 'Ready',
-      createdAt: new Date(Date.now() - 3600000 * 24 * 3).toISOString() // 3 days ago
-    },
-    {
-      id: 'vid_2',
-      title: 'Elephants Dream',
-      description: 'A surreal journey of two characters in a mechanical world, exploring the boundaries of technology and human nature.',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
-      videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-      views: 843,
-      userId: 'system',
-      status: 'Ready',
-      createdAt: new Date(Date.now() - 3600000 * 24).toISOString() // 1 day ago
-    },
-    {
-      id: 'vid_3',
-      title: 'Sintel - CGI Animation',
-      description: 'The story of a lonely young woman who befriended a baby dragon, and her epic quest to rescue him after he was captured.',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
-      videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-      views: 2901,
-      userId: 'system',
-      status: 'Ready',
-      createdAt: new Date(Date.now() - 3600000 * 5).toISOString() // 5 hours ago
-    }
-  ];
-
+  private http = inject(HttpClient);
   videosSignal = signal<Video[]>([]);
 
-  constructor() {
-    this.loadVideos();
-    // Periodically run checking of processing videos to advance their status to 'Ready'
-    setInterval(() => this.processVideos(), 3000);
+  constructor(private commonService: CommonService) {
+    this.fetchVideos();
   }
 
-  private loadVideos() {
-    const stored = localStorage.getItem(this.VIDEOS_KEY);
-    if (stored) {
-      this.videosSignal.set(JSON.parse(stored));
-    } else {
-      this.videosSignal.set(this.initialVideos);
-      this.saveVideos(this.initialVideos);
+  fetchVideos() {
+    this.commonService.get<VideoApiResponse<BackendVideo[]>>('videos').subscribe({
+      next: (res) => {
+        if (res.status === 0 && res.data) {
+          const mapped = res.data.map(v => this.mapBackendVideo(v));
+          this.videosSignal.set(mapped);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch videos from server:', err);
+      }
+    });
+  }
+
+  private resolveVideoUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
     }
+    const gatewayBase = environment.apiUrl.replace('/api/v1', '');
+    return `${gatewayBase}${url.startsWith('/') ? '' : '/'}${url}`;
   }
 
-  private saveVideos(videos: Video[]) {
-    localStorage.setItem(this.VIDEOS_KEY, JSON.stringify(videos));
-    this.videosSignal.set(videos);
+  private mapBackendVideo(v: BackendVideo): Video {
+    return {
+      id: v.id ? v.id.toString() : '',
+      title: v.title,
+      description: v.description,
+      thumbnailUrl: v.thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
+      videoUrl: this.resolveVideoUrl(v.videoUrl),
+      views: v.views,
+      userId: v.userId,
+      status: (v.status === 'READY' || v.status === 'Ready') ? 'Ready' : 'Processing',
+      createdAt: v.createdAt || new Date().toISOString()
+    };
   }
 
   getVideos(): Video[] {
@@ -91,18 +95,32 @@ export class VideoService {
   }
 
   incrementViews(id: string) {
-    const videos = this.videosSignal().map(v => {
-      if (v.id === id) {
-        return { ...v, views: v.views + 1 };
+    this.commonService.post<VideoApiResponse<BackendVideo>>(`videos/${id}/view`, {}).subscribe({
+      next: (res) => {
+        if (res.status === 0 && res.data) {
+          const updatedVideo = this.mapBackendVideo(res.data);
+          this.videosSignal.update(videos =>
+            videos.map(v => v.id === id ? updatedVideo : v)
+          );
+        }
+      },
+      error: (err) => {
+        console.error('Failed to increment views on server:', err);
       }
-      return v;
     });
-    this.saveVideos(videos);
   }
 
   deleteVideo(id: string) {
-    const videos = this.videosSignal().filter(v => v.id !== id);
-    this.saveVideos(videos);
+    this.commonService.delete<VideoApiResponse<void>>(`videos/${id}`).subscribe({
+      next: (res) => {
+        if (res.status === 0) {
+          this.videosSignal.update(videos => videos.filter(v => v.id !== id));
+        }
+      },
+      error: (err) => {
+        console.error('Failed to delete video on server:', err);
+      }
+    });
   }
 
   searchVideos(query: string): Video[] {
@@ -123,58 +141,51 @@ export class VideoService {
     userId: string,
     videoFile: File
   ): Observable<number> {
-    const progress$ = new Subject<number>();
-    let progress = 0;
+    const formData = new FormData();
+    formData.append('file', videoFile);
+    formData.append('title', title);
+    formData.append('description', description);
 
-    const interval = setInterval(() => {
-      progress += Math.floor(Math.random() * 15) + 5;
-      if (progress >= 100) {
-        progress = 100;
-        progress$.next(progress);
-        progress$.complete();
-        clearInterval(interval);
-
-        // Upload complete, add video to database with status 'Processing'
-        const newVideo: Video = {
-          id: 'vid_' + Math.random().toString(36).substr(2, 9),
-          title,
-          description,
-          thumbnailUrl: thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
-          // Since it's mock, we'll reuse the Big Buck Bunny or a simple sample for playback
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-          views: 0,
-          userId,
-          status: 'Processing',
-          createdAt: new Date().toISOString()
-        };
-
-        const currentVideos = [...this.videosSignal(), newVideo];
-        this.saveVideos(currentVideos);
-      } else {
-        progress$.next(progress);
-      }
-    }, 250);
-
-    return progress$;
-  }
-
-  private processVideos() {
-    let changed = false;
-    const now = new Date();
-    const updated = this.videosSignal().map(v => {
-      if (v.status === 'Processing') {
-        const createdTime = new Date(v.createdAt).getTime();
-        // Set processing duration to 12 seconds
-        if (now.getTime() - createdTime > 12000) {
-          changed = true;
-          return { ...v, status: 'Ready' as const };
-        }
-      }
-      return v;
+    const req = new HttpRequest('POST', `${environment.apiUrl}/upload`, formData, {
+      reportProgress: true,
+      responseType: 'json'
     });
 
-    if (changed) {
-      this.saveVideos(updated);
-    }
+    const progress$ = new Subject<number>();
+
+    this.http.request<any>(req).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          const percentDone = event.total ? Math.round(100 * event.loaded / event.total) : 0;
+          progress$.next(percentDone);
+        } else if (event.type === HttpEventType.Response) {
+          const body = event.body;
+          const videoUrl = body.videoUrl;
+
+          // Register video metadata in video-service
+          this.commonService.post<any>('videos', {
+            title,
+            description,
+            videoUrl,
+            thumbnailUrl: thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
+            userId,
+            status: 'Processing'
+          }).subscribe({
+            next: () => {
+              this.fetchVideos();
+              progress$.complete();
+            },
+            error: (err) => {
+              progress$.error(err);
+            }
+          });
+        }
+      },
+      error: (err) => {
+        progress$.error(err);
+      }
+    });
+
+    return progress$.asObservable();
   }
 }

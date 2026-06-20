@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -36,18 +37,23 @@ export class RegisterComponent {
     this.successMessage.set(null);
     this.isLoading.set(true);
 
-    setTimeout(() => {
-      const res = this.authService.register(this.username, this.email, this.password);
-      this.isLoading.set(false);
-
-      if (res.success) {
-        this.successMessage.set('Account created successfully! Redirecting...');
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 1500);
-      } else {
-        this.errorMessage.set(res.message);
+    this.authService.register(this.username, this.email, this.password).subscribe({
+      next: (res) => {
+        this.isLoading.set(false);
+        if (res.status === 0) {
+          this.successMessage.set('Account created successfully! Redirecting...');
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1500);
+        } else {
+          this.errorMessage.set(res.message || 'Registration failed');
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const errorMsg = err.message || 'Registration failed';
+        this.errorMessage.set(errorMsg);
       }
-    }, 800);
+    });
   }
 }

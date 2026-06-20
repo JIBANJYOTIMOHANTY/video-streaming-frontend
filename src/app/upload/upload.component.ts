@@ -66,7 +66,7 @@ export class UploadComponent {
         this.uploadProgress.set(progress);
       },
       error: (err) => {
-        this.errorMessage.set('Failed to upload video.');
+        this.errorMessage.set(err.message || 'Failed to upload video.');
         this.isUploading.set(false);
       },
       complete: () => {
