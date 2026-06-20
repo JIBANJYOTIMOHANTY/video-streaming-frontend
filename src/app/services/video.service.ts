@@ -29,7 +29,7 @@ interface BackendVideo {
   videoUrl: string;
   thumbnailUrl: string;
   userId: string;
-  status: 'READY' | 'PROCESSING';
+  status: string;
   views: number;
   createdAt?: string;
 }
@@ -77,7 +77,7 @@ export class VideoService {
       videoUrl: this.resolveVideoUrl(v.videoUrl),
       views: v.views,
       userId: v.userId,
-      status: v.status === 'READY' ? 'Ready' : 'Processing',
+      status: (v.status === 'READY' || v.status === 'Ready') ? 'Ready' : 'Processing',
       createdAt: v.createdAt || new Date().toISOString()
     };
   }

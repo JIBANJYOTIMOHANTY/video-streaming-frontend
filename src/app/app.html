@@ -2,3 +2,7 @@
 <div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-violet-500/30 selection:text-white transition-colors duration-200">
   <router-outlet></router-outlet>
 </div>
+
+@if (isLoading()) {
+  <app-global-loader></app-global-loader>
+}

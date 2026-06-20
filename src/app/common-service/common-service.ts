@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, finalize } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 
@@ -22,12 +22,28 @@ export interface RequestOptions {
 export class CommonService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  isLoadingSignal = signal(false);
+  private activeRequests = 0;
+
+  private startLoading() {
+    this.activeRequests++;
+    this.isLoadingSignal.set(true);
+  }
+
+  private stopLoading() {
+    this.activeRequests--;
+    if (this.activeRequests <= 0) {
+      this.activeRequests = 0;
+      this.isLoadingSignal.set(false);
+    }
+  }
 
 
   // Base API URL can be updated to point to a specific environment API path
   private baseUrl = environment.apiUrl;
 
   get<T>(endpoint: string, query?: string, options: RequestOptions = {}): Observable<T> {
+    this.startLoading();
     if (query) {
       options.params = { ...options.params, 'query': query };
     }
@@ -35,7 +51,8 @@ export class CommonService {
     const httpOptions = this.prepareOptions(options, 'GET');
     return this.http.get<T>(url, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
       tap((response) => this.saveTokenIfPresent(response)),
-      catchError((error) => this.handleError(error))
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.stopLoading())
     );
   }
 
@@ -43,12 +60,14 @@ export class CommonService {
    * Performs a secure POST request.
    */
   post<T>(endpoint: string, body: any, options: RequestOptions = {}): Observable<T> {
+    this.startLoading();
     const url = this.resolveUrl(endpoint);
     const sanitizedBody = options.skipSanitization ? body : this.sanitize(body);
     const httpOptions = this.prepareOptions(options, 'POST');
     return this.http.post<T>(url, sanitizedBody, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
       tap((response) => this.saveTokenIfPresent(response)),
-      catchError((error) => this.handleError(error))
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.stopLoading())
     );
   }
 
@@ -56,12 +75,14 @@ export class CommonService {
    * Performs a secure PUT request.
    */
   put<T>(endpoint: string, body: any, options: RequestOptions = {}): Observable<T> {
+    this.startLoading();
     const url = this.resolveUrl(endpoint);
     const sanitizedBody = options.skipSanitization ? body : this.sanitize(body);
     const httpOptions = this.prepareOptions(options, 'PUT');
     return this.http.put<T>(url, sanitizedBody, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
       tap((response) => this.saveTokenIfPresent(response)),
-      catchError((error) => this.handleError(error))
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.stopLoading())
     );
   }
 
@@ -69,12 +90,14 @@ export class CommonService {
    * Performs a secure PATCH request.
    */
   patch<T>(endpoint: string, body: any, options: RequestOptions = {}): Observable<T> {
+    this.startLoading();
     const url = this.resolveUrl(endpoint);
     const sanitizedBody = options.skipSanitization ? body : this.sanitize(body);
     const httpOptions = this.prepareOptions(options, 'PATCH');
     return this.http.patch<T>(url, sanitizedBody, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
       tap((response) => this.saveTokenIfPresent(response)),
-      catchError((error) => this.handleError(error))
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.stopLoading())
     );
   }
 
@@ -82,11 +105,13 @@ export class CommonService {
    * Performs a secure DELETE request.
    */
   delete<T>(endpoint: string, options: RequestOptions = {}): Observable<T> {
+    this.startLoading();
     const url = this.resolveUrl(endpoint);
     const httpOptions = this.prepareOptions(options, 'DELETE');
     return this.http.delete<T>(url, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
       tap((response) => this.saveTokenIfPresent(response)),
-      catchError((error) => this.handleError(error))
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.stopLoading())
     );
   }
 
