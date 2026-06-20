@@ -17,7 +17,7 @@ export interface Video {
 }
 
 interface VideoApiResponse<T> {
-  status: string;
+  status: number;
   message: string;
   data: T;
 }
@@ -48,7 +48,7 @@ export class VideoService {
   fetchVideos() {
     this.commonService.get<VideoApiResponse<BackendVideo[]>>('videos').subscribe({
       next: (res) => {
-        if (res.status === 'success' && res.data) {
+        if (res.status === 0 && res.data) {
           const mapped = res.data.map(v => this.mapBackendVideo(v));
           this.videosSignal.set(mapped);
         }
@@ -97,7 +97,7 @@ export class VideoService {
   incrementViews(id: string) {
     this.commonService.post<VideoApiResponse<BackendVideo>>(`videos/${id}/view`, {}).subscribe({
       next: (res) => {
-        if (res.status === 'success' && res.data) {
+        if (res.status === 0 && res.data) {
           const updatedVideo = this.mapBackendVideo(res.data);
           this.videosSignal.update(videos =>
             videos.map(v => v.id === id ? updatedVideo : v)
@@ -113,7 +113,7 @@ export class VideoService {
   deleteVideo(id: string) {
     this.commonService.delete<VideoApiResponse<void>>(`videos/${id}`).subscribe({
       next: (res) => {
-        if (res.status === 'success') {
+        if (res.status === 0) {
           this.videosSignal.update(videos => videos.filter(v => v.id !== id));
         }
       },

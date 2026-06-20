@@ -40,7 +40,7 @@ export class RegisterComponent {
     this.authService.register(this.username, this.email, this.password).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        if (res.status === 'success') {
+        if (res.status === 0) {
           this.successMessage.set('Account created successfully! Redirecting...');
           setTimeout(() => {
             this.router.navigate(['/login']);

@@ -12,7 +12,7 @@ export interface User {
 }
 
 interface ApiResponse<T> {
-  status: string;
+  status: number;
   message: string;
   data: T;
 }
@@ -60,7 +60,7 @@ export class AuthService {
       password
     }, { skipAuth: true }).pipe(
       tap(res => {
-        if (res.status === 'success' && res.data) {
+        if (res.status === 0 && res.data) {
           const user: User = {
             id: 'usr_' + res.data.username,
             username: res.data.username,

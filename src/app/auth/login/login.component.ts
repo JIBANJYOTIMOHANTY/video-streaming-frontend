@@ -31,7 +31,7 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        if (res.status === 'success') {
+        if (res.status === 0) {
           this.router.navigate(['/']);
         } else {
           this.errorMessage.set(res.message || 'Login failed');
