@@ -31,8 +31,12 @@ export class AuthService {
   currentUserSignal = signal<User | null>(null);
   isLoggedIn = computed(() => this.currentUserSignal() !== null);
 
+  private lastActivity = Date.now();
+  private readonly REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
   constructor(private commonService: CommonService, private router: Router) {
     this.loadCurrentUser();
+    this.setupActivityListener();
   }
 
   private loadCurrentUser() {
@@ -82,5 +86,37 @@ export class AuthService {
     localStorage.removeItem('token');
     this.currentUserSignal.set(null);
     this.router.navigate(['/']);
+  }
+
+  refreshToken(token: string): Observable<ApiResponse<LoginResponseData>> {
+    return this.commonService.post<ApiResponse<LoginResponseData>>(`auth/refresh?token=${token}`, {}, { skipAuth: true });
+  }
+
+  private setupActivityListener() {
+    const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    
+    const onUserActivity = () => {
+      const now = Date.now();
+      const token = localStorage.getItem('token') || localStorage.getItem('jwt_token');
+      
+      if (token && this.isLoggedIn() && (now - this.lastActivity > this.REFRESH_INTERVAL)) {
+        this.lastActivity = now;
+        this.refreshToken(token).subscribe({
+          next: (res) => {
+            if (res.status === 0 && res.data) {
+              localStorage.setItem('token', res.data.token);
+              localStorage.setItem('jwt_token', res.data.token);
+            }
+          },
+          error: (err) => {
+            console.error('Failed to refresh token during activity:', err);
+          }
+        });
+      }
+    };
+
+    activityEvents.forEach(event => {
+      window.addEventListener(event, onUserActivity);
+    });
   }
 }

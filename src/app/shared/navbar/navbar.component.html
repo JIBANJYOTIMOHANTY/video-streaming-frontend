@@ -1,44 +1,44 @@
-<nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+<nav class="bg-[#0b0d19]/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <div class="flex items-center">
-        <a routerLink="/" class="flex items-center gap-2 text-slate-900 dark:text-white font-extrabold text-xl tracking-wider hover:opacity-90 transition-opacity">
-          <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <a routerLink="/" class="flex items-center gap-2.5 text-white font-extrabold text-xl tracking-wider hover:opacity-95 transition-all group">
+          <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 group-hover:scale-105 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           </div>
-          <span>Stream<span class="text-violet-500">Flow</span></span>
+          <span class="bg-gradient-to-r from-white to-slate-350 bg-clip-text text-transparent">Stream<span class="text-violet-500">Flow</span></span>
         </a>
         <div class="hidden md:block ml-10">
-          <div class="flex items-baseline space-x-2">
+          <div class="flex items-baseline space-x-1">
             <a
               routerLink="/"
               [routerLinkActiveOptions]="{exact: true}"
-              routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
-              class="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+              routerLinkActive="bg-white/5 text-violet-400 border-b-2 border-violet-500 rounded-b-none"
+              class="text-slate-300 hover:text-white hover:bg-white/5 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all"
             >
               Home
             </a>
             @if (authService.isLoggedIn()) {
               <a
                 routerLink="/upload"
-                routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
-                class="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+                routerLinkActive="bg-white/5 text-violet-400 border-b-2 border-violet-500 rounded-b-none"
+                class="text-slate-300 hover:text-white hover:bg-white/5 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all"
               >
                 Upload Video
               </a>
               <a
                 routerLink="/my-videos"
-                routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
-                class="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+                routerLinkActive="bg-white/5 text-violet-400 border-b-2 border-violet-500 rounded-b-none"
+                class="text-slate-300 hover:text-white hover:bg-white/5 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all"
               >
                 My Videos
               </a>
               <a
                 routerLink="/profile"
-                routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
-                class="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+                routerLinkActive="bg-white/5 text-violet-400 border-b-2 border-violet-500 rounded-b-none"
+                class="text-slate-300 hover:text-white hover:bg-white/5 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all"
               >
                 Profile
               </a>
@@ -48,37 +48,23 @@
       </div>
 
       <div class="hidden md:flex items-center gap-4">
-        <!-- Theme Switcher -->
-        <button
-          (click)="themeService.toggleTheme()"
-          type="button"
-          class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-          aria-label="Toggle theme"
-        >
-          @if (themeService.themeSignal() === 'dark') {
-            <!-- Sun Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5.5 w-5.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-            </svg>
-          } @else {
-            <!-- Moon Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5.5 w-5.5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          }
-        </button>
+        <!-- Minimal Theme Display Pill -->
+        <div class="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5 text-[11px] font-semibold text-violet-400 tracking-wide uppercase">
+          <span class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
+          Cinematic Dark
+        </div>
 
         @if (authService.isLoggedIn()) {
-          <!-- User Badge -->
-          <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-855">
-            <div class="h-6 w-6 rounded-full bg-violet-600 flex items-center justify-center text-xs font-bold text-white uppercase">
+          <!-- User Profile Dropdown / Badge -->
+          <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-1.5 rounded-xl border border-white/5 hover:bg-white/10 transition-all">
+            <div class="h-7 w-7 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white uppercase">
               {{ authService.currentUserSignal()?.username?.charAt(0) }}
             </div>
-            <span class="text-slate-700 dark:text-slate-300 text-sm font-medium">{{ authService.currentUserSignal()?.username }}</span>
+            <span class="text-slate-200 text-sm font-semibold">{{ authService.currentUserSignal()?.username }}</span>
           </div>
           <button
             (click)="logout()"
-            class="text-sm font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 hover:border-red-500/30 px-4 py-2 rounded-xl transition-all cursor-pointer"
+            class="text-sm font-bold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/30 px-4 py-2 rounded-xl transition-all cursor-pointer"
           >
             Logout
           </button>
@@ -86,10 +72,10 @@
           <!-- Sign In Button -->
           <a
             routerLink="/login"
-            class="text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white px-5 py-2 rounded-xl shadow-md shadow-violet-500/20 hover:shadow-violet-500/35 transition-all cursor-pointer flex items-center gap-1.5"
+            class="text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:scale-102 transition-all cursor-pointer flex items-center gap-1.5"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
             </svg>
             Sign In
           </a>
@@ -97,34 +83,17 @@
       </div>
 
       <div class="flex md:hidden items-center gap-2">
-        <!-- Mobile Theme Switcher -->
-        <button
-          (click)="themeService.toggleTheme()"
-          type="button"
-          class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-        >
-          @if (themeService.themeSignal() === 'dark') {
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-            </svg>
-          } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          }
-        </button>
-
         <!-- Burger Menu Button -->
         <button
           (click)="toggleMobileMenu()"
           type="button"
-          class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white focus:outline-none p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          class="text-slate-400 hover:text-white focus:outline-none p-2 rounded-lg hover:bg-white/5 transition-all"
         >
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             @if (isMobileMenuOpen()) {
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
             } @else {
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" />
             }
           </svg>
         </button>
@@ -133,57 +102,57 @@
   </div>
 
   @if (isMobileMenuOpen()) {
-    <div class="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 animate-fadeIn">
+    <div class="md:hidden bg-[#0b0d19] border-b border-white/5 animate-fadeIn">
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
         <a
           routerLink="/"
           [routerLinkActiveOptions]="{exact: true}"
-          routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
+          routerLinkActive="bg-white/5 text-violet-400"
           (click)="toggleMobileMenu()"
-          class="block text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-base font-semibold"
+          class="block text-slate-350 hover:text-white hover:bg-white/5 px-3 py-2.5 rounded-lg text-base font-semibold"
         >
           Home
         </a>
         @if (authService.isLoggedIn()) {
           <a
             routerLink="/upload"
-            routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
+            routerLinkActive="bg-white/5 text-violet-400"
             (click)="toggleMobileMenu()"
-            class="block text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-base font-semibold"
+            class="block text-slate-355 hover:text-white hover:bg-white/5 px-3 py-2.5 rounded-lg text-base font-semibold"
           >
             Upload Video
           </a>
           <a
             routerLink="/my-videos"
-            routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
+            routerLinkActive="bg-white/5 text-violet-400"
             (click)="toggleMobileMenu()"
-            class="block text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-base font-semibold"
+            class="block text-slate-355 hover:text-white hover:bg-white/5 px-3 py-2.5 rounded-lg text-base font-semibold"
           >
             My Videos
           </a>
           <a
             routerLink="/profile"
-            routerLinkActive="bg-slate-100 dark:bg-slate-800 text-violet-600 dark:text-white"
+            routerLinkActive="bg-white/5 text-violet-400"
             (click)="toggleMobileMenu()"
-            class="block text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-3 py-2 rounded-lg text-base font-semibold"
+            class="block text-slate-355 hover:text-white hover:bg-white/5 px-3 py-2.5 rounded-lg text-base font-semibold"
           >
             Profile
           </a>
-          <div class="border-t border-slate-200 dark:border-slate-800 my-2 pt-2 flex items-center justify-between px-3">
-            <span class="text-slate-500 dark:text-slate-400 text-sm font-semibold">User: <strong class="text-slate-900 dark:text-white">{{ authService.currentUserSignal()?.username }}</strong></span>
+          <div class="border-t border-white/5 my-2 pt-2 flex items-center justify-between px-3">
+            <span class="text-slate-400 text-sm font-semibold">User: <strong class="text-white">{{ authService.currentUserSignal()?.username }}</strong></span>
             <button
               (click)="logout()"
-              class="text-xs font-bold bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg cursor-pointer"
+              class="text-xs font-bold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg cursor-pointer"
             >
               Logout
             </button>
           </div>
         } @else {
-          <div class="border-t border-slate-200 dark:border-slate-800 my-2 pt-2 px-3">
+          <div class="border-t border-white/5 my-2 pt-2 px-3">
             <a
               routerLink="/login"
               (click)="toggleMobileMenu()"
-              class="block text-center text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white px-4 py-2.5 rounded-xl shadow-md shadow-violet-500/20 transition-all cursor-pointer"
+              class="block text-center text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white px-4 py-2.5 rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
             >
               Sign In
             </a>
