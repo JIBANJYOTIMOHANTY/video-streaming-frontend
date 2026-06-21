@@ -24,6 +24,7 @@ export class VideoPlayerComponent {
   });
 
   constructor(private route: ActivatedRoute, private videoService: VideoService) {
+    this.videoService.fetchVideos();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {

@@ -15,7 +15,8 @@ import { AuthService } from '../auth/auth.service';
 export class UploadComponent {
   title = '';
   description = '';
-  thumbnailUrl = '';
+  selectedThumbnailFile: File | null = null;
+  thumbnailFileName = signal<string | null>(null);
   selectedVideoFile: File | null = null;
   videoFileName = signal<string | null>(null);
 
@@ -35,6 +36,14 @@ export class UploadComponent {
     if (file) {
       this.selectedVideoFile = file;
       this.videoFileName.set(file.name);
+    }
+  }
+
+  onThumbnailSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedThumbnailFile = file;
+      this.thumbnailFileName.set(file.name);
     }
   }
 
@@ -58,7 +67,7 @@ export class UploadComponent {
     this.videoService.uploadVideo(
       this.title,
       this.description,
-      this.thumbnailUrl,
+      this.selectedThumbnailFile,
       user.id,
       this.selectedVideoFile
     ).subscribe({
@@ -75,7 +84,8 @@ export class UploadComponent {
         // Reset form
         this.title = '';
         this.description = '';
-        this.thumbnailUrl = '';
+        this.selectedThumbnailFile = null;
+        this.thumbnailFileName.set(null);
         this.selectedVideoFile = null;
         this.videoFileName.set(null);
 

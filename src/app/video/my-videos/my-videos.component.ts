@@ -20,7 +20,9 @@ export class MyVideosComponent {
   constructor(
     private videoService: VideoService,
     private authService: AuthService
-  ) {}
+  ) {
+    this.videoService.fetchVideos();
+  }
 
   onDelete(id: string) {
     if (confirm('Are you sure you want to delete this video?')) {

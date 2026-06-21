@@ -94,17 +94,35 @@
       </div>
 
       <!-- Thumbnail Input -->
-      <div>
-        <label for="thumbnail" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Thumbnail URL (Optional)</label>
-        <input
-          type="url"
-          id="thumbnail"
-          name="thumbnail"
-          [(ngModel)]="thumbnailUrl"
-          [disabled]="isUploading()"
-          placeholder="e.g., https://images.unsplash.com/photo-..."
-          class="mt-1 block w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
-        />
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Thumbnail Image (Optional)</label>
+        <div class="flex justify-center px-6 pt-4 pb-4 border-2 border-slate-200 dark:border-slate-800 border-dashed rounded-2xl hover:border-slate-350 dark:hover:border-slate-700 transition-colors bg-slate-50/50 dark:bg-slate-955/40 relative">
+          <div class="space-y-1 text-center">
+            <svg class="mx-auto h-8 w-8 text-slate-400 dark:text-slate-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="flex text-sm text-slate-500 dark:text-slate-400 justify-center">
+              <label for="thumbnail-upload" class="relative cursor-pointer rounded-md font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-350 transition-colors focus-within:outline-none">
+                <span>Select a thumbnail image</span>
+                <input
+                  id="thumbnail-upload"
+                  name="thumbnail-upload"
+                  type="file"
+                  accept="image/*"
+                  class="sr-only"
+                  (change)="onThumbnailSelected($event)"
+                  [disabled]="isUploading()"
+                />
+              </label>
+            </div>
+            <p class="text-xs text-slate-400 dark:text-slate-500">PNG, JPG, or JPEG</p>
+            @if (thumbnailFileName()) {
+              <div class="mt-2 bg-violet-100 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs px-3 py-1 rounded-lg border border-violet-200 dark:border-violet-500/20 max-w-xs mx-auto truncate">
+                Selected: {{ thumbnailFileName() }}
+              </div>
+            }
+          </div>
+        </div>
       </div>
 
       <!-- Progress Bar (Only during upload) -->

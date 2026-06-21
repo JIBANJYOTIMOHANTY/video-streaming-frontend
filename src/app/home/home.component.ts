@@ -18,7 +18,9 @@ export class HomeComponent {
     return this.videoService.searchVideos(this.searchQuery());
   });
 
-  constructor(private videoService: VideoService) {}
+  constructor(private videoService: VideoService) {
+    this.videoService.fetchVideos();
+  }
 
   onSearch(query: string) {
     this.searchQuery.set(query);

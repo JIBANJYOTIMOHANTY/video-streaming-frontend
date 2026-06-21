@@ -73,7 +73,7 @@ export class VideoService {
       id: v.id ? v.id.toString() : '',
       title: v.title,
       description: v.description,
-      thumbnailUrl: v.thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
+      thumbnailUrl: this.resolveVideoUrl(v.thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80'),
       videoUrl: this.resolveVideoUrl(v.videoUrl),
       views: v.views,
       userId: v.userId,
@@ -137,7 +137,7 @@ export class VideoService {
   uploadVideo(
     title: string,
     description: string,
-    thumbnailUrl: string,
+    thumbnailFile: File | null,
     userId: string,
     videoFile: File
   ): Observable<number> {
@@ -145,6 +145,9 @@ export class VideoService {
     formData.append('file', videoFile);
     formData.append('title', title);
     formData.append('description', description);
+    if (thumbnailFile) {
+      formData.append('thumbnail', thumbnailFile);
+    }
 
     const req = new HttpRequest('POST', `${environment.apiUrl}/upload`, formData, {
       reportProgress: true,
@@ -161,13 +164,14 @@ export class VideoService {
         } else if (event.type === HttpEventType.Response) {
           const body = event.body;
           const videoUrl = body.videoUrl;
+          const uploadedThumbnailUrl = body.thumbnailUrl;
 
           // Register video metadata in video-service
           this.commonService.post<any>('videos', {
             title,
             description,
             videoUrl,
-            thumbnailUrl: thumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
+            thumbnailUrl: uploadedThumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
             userId,
             status: 'Processing'
           }).subscribe({
