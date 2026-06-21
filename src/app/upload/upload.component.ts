@@ -20,6 +20,9 @@ export class UploadComponent {
   selectedVideoFile: File | null = null;
   videoFileName = signal<string | null>(null);
 
+  currentStep = signal(1);
+  visibility = 'public';
+
   isUploading = signal(false);
   uploadProgress = signal(0);
   successMessage = signal<string | null>(null);
@@ -30,6 +33,22 @@ export class UploadComponent {
     private authService: AuthService,
     private router: Router
   ) {}
+
+  nextStep() {
+    if (this.currentStep() < 4) {
+      this.currentStep.update(s => s + 1);
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep() > 1) {
+      this.currentStep.update(s => s - 1);
+    }
+  }
+
+  goToStep(step: number) {
+    this.currentStep.set(step);
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -88,6 +107,7 @@ export class UploadComponent {
         this.thumbnailFileName.set(null);
         this.selectedVideoFile = null;
         this.videoFileName.set(null);
+        this.currentStep.set(1);
 
         // Redirect after a short delay
         setTimeout(() => {
