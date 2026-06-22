@@ -175,18 +175,24 @@ export class VideoService {
             userId,
             status: 'Processing'
           }).subscribe({
-            next: () => {
-              this.fetchVideos();
-              progress$.complete();
+            next: (res) => {
+              if (res.status == 0) {
+                this.fetchVideos();
+                progress$.complete();
+              } else {
+                progress$.error(new Error(res.message || 'Failed to register video metadata.'));
+              }
             },
             error: (err) => {
-              progress$.error(err);
+              const msg = err.message || err.error?.message || 'Failed to register video metadata.';
+              progress$.error(new Error(msg));
             }
           });
         }
       },
       error: (err) => {
-        progress$.error(err);
+        const msg = err.error?.data || err.error?.message || err.message || 'Failed to upload video.';
+        progress$.error(new Error(msg));
       }
     });
 
