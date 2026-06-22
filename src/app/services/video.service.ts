@@ -139,7 +139,10 @@ export class VideoService {
     description: string,
     thumbnailFile: File | null,
     userId: string,
-    videoFile: File
+    videoFile: File,
+    visibility: string = 'public',
+    autoSubtitles: boolean = false,
+    interactiveCards: boolean = false
   ): Observable<number> {
     const formData = new FormData();
     formData.append('file', videoFile);
@@ -173,20 +176,30 @@ export class VideoService {
             videoUrl,
             thumbnailUrl: uploadedThumbnailUrl || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80',
             userId,
-            status: 'Processing'
+            status: 'Processing',
+            visibility,
+            autoSubtitles,
+            interactiveCards,
+            copyrightPassed: true
           }).subscribe({
-            next: () => {
-              this.fetchVideos();
-              progress$.complete();
+            next: (res) => {
+              if (res.status == 0) {
+                this.fetchVideos();
+                progress$.complete();
+              } else {
+                progress$.error(new Error(res.message || 'Failed to register video metadata.'));
+              }
             },
             error: (err) => {
-              progress$.error(err);
+              const msg = err.message || err.error?.message || 'Failed to register video metadata.';
+              progress$.error(new Error(msg));
             }
           });
         }
       },
       error: (err) => {
-        progress$.error(err);
+        const msg = err.error?.data || err.error?.message || err.message || 'Failed to upload video.';
+        progress$.error(new Error(msg));
       }
     });
 
