@@ -222,7 +222,7 @@
                   <div class="text-xs text-slate-500 font-semibold">Generate speech-to-text transcript subtitles for accessibility</div>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" class="sr-only peer" checked>
+                  <input type="checkbox" name="autoSubtitles" [(ngModel)]="autoSubtitles" class="sr-only peer">
                   <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
                 </label>
               </div>
@@ -234,7 +234,7 @@
                   <div class="text-xs text-slate-500 font-semibold">Promote relevant search content in the watch player sidebar</div>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" class="sr-only peer">
+                  <input type="checkbox" name="interactiveCards" [(ngModel)]="interactiveCards" class="sr-only peer">
                   <div class="w-11 h-6 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
                 </label>
               </div>

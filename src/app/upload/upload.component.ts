@@ -22,6 +22,8 @@ export class UploadComponent {
 
   currentStep = signal(1);
   visibility = 'public';
+  autoSubtitles = true;
+  interactiveCards = false;
 
   isUploading = signal(false);
   uploadProgress = signal(0);
@@ -88,7 +90,10 @@ export class UploadComponent {
       this.description,
       this.selectedThumbnailFile,
       user.id,
-      this.selectedVideoFile
+      this.selectedVideoFile,
+      this.visibility,
+      this.autoSubtitles,
+      this.interactiveCards
     ).subscribe({
       next: (progress) => {
         this.uploadProgress.set(progress);
