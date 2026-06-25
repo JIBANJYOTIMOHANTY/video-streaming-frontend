@@ -39,7 +39,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        const errorMsg = err.message || 'Invalid username or password';
+        const errorMsg = err.message || 'Invalid Username Or Password';
         this.errorMessage.set(errorMsg);
       }
     });
